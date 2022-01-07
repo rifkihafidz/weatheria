@@ -4,6 +4,8 @@ class WeatherModel {
   String? weatherStatus;
   String? weatherIcon;
   num? humidity;
+  num? latitude;
+  num? longitude;
 
   WeatherModel({
     this.dateTimeUnix,
@@ -11,6 +13,8 @@ class WeatherModel {
     this.weatherStatus,
     this.weatherIcon,
     this.humidity,
+    this.latitude,
+    this.longitude,
   });
 
   WeatherModel.fromMap(Map map) {
@@ -19,6 +23,8 @@ class WeatherModel {
     this.weatherStatus = map['weather'][0]['main'];
     this.weatherIcon = map['weather'][0]['icon'];
     this.humidity = map['main']['humidity'];
+    this.latitude = map['coord']['lat'];
+    this.longitude = map['coord']['lon'];
   }
 
   // factory WeatherModel.fromJson(Map<dynamic, dynamic> json) {

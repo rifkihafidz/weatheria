@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
-import 'package:location/location.dart';
+import 'package:weatheria/cubit/forecast_cubit.dart';
 import 'package:weatheria/cubit/weather_cubit.dart';
-import 'package:weatheria/models/location_model.dart';
-import 'package:weatheria/models/weather_model.dart';
+import 'package:weatheria/models/forecast_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,69 +14,100 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    context.read<ForecastCubit>().fetchForecast();
     context.read<WeatherCubit>().fetchLocationWeather();
     super.initState();
-  }
-
-  Location location = Location();
-  var locationModel = LocationModel();
-  var weatherModel = WeatherModel();
-
-  Future<WeatherModel> getLocationWeather() async {
-    await location.getLocation().then((locationData) {
-      locationModel.latitude = locationData.latitude!;
-      locationModel.longitude = locationData.longitude!;
-    });
-    print('Get Location Success');
-    print('Get Weather Start');
-    final request = await get(
-      Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${locationModel.latitude}&lon=${locationModel.longitude}&appid=6a7457c5db75047b06c52279f9cd80bb',
-      ),
-    );
-    Map response = jsonDecode(request.body);
-    weatherModel = WeatherModel.fromMap(response);
-    return weatherModel;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BlocConsumer<WeatherCubit, WeatherState>(
-                listener: (context, state) {
-                  if (state is WeatherFailed) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.red,
-                        content: Text(state.error),
-                      ),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is WeatherSuccess) {
-                    return Column(
-                      children: [
-                        Text('Weather :'),
-                        Text('${state.weather.weatherStatus}'),
-                        Text('Temperature :'),
-                        Text('${state.weather.temperature}°'),
-                        Text('Humidity :'),
-                        Text('${state.weather.humidity}%'),
-                      ],
-                    );
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              )
-            ],
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                BlocConsumer<WeatherCubit, WeatherState>(
+                  listener: (context, state) {
+                    if (state is WeatherFailed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(state.error),
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is WeatherSuccess) {
+                      return Column(
+                        children: [
+                          Text('Weather :'),
+                          Text('${state.weather.weatherStatus}'),
+                          Text('Temperature :'),
+                          Text('${state.weather.temperature}°'),
+                          Text('Humidity :'),
+                          Text('${state.weather.humidity}%'),
+                          Text('Latitude :'),
+                          Text('${state.weather.latitude}'),
+                          Text('Longitude :'),
+                          Text('${state.weather.longitude}'),
+                          Container(
+                            margin: EdgeInsets.all(5),
+                            child: TextButton(
+                              child: Text(
+                                'Get Current Location + Weather',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {
+                                context
+                                    .read<WeatherCubit>()
+                                    .fetchLocationWeather();
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.blue)),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    return Text(state.toString());
+                  },
+                ),
+                SizedBox(height: 10),
+                BlocConsumer<ForecastCubit, ForecastState>(
+                  listener: (context, state) {
+                    if (state is ForecastFailed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(state.error),
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is ForecastSuccess) {
+                      return Column(
+                        children: state.forecast.map((ForecastModel forecast) {
+                          return Column(
+                            children: [
+                              Text(
+                                  'Temperature: ${forecast.temperature.toString()}°'),
+                              SizedBox(height: 5),
+                              Text('Weather: ${forecast.weatherCondition}'),
+                              SizedBox(height: 10),
+                            ],
+                          );
+                        }).toList(),
+                      );
+                    }
+                    return Text(state.toString());
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -88,28 +115,44 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// FutureBuilder(
-//   future: getLocationWeather(),
-//   builder: (context, AsyncSnapshot snapshot) {
-//     switch (snapshot.connectionState) {
-//       case ConnectionState.waiting:
-//         return Center(
-//           child: CircularProgressIndicator(),
-//         );
-//       case ConnectionState.done:
-//         weatherModel = snapshot.data;
-//         return Column(
-//           children: [
-//             Text('Weather :'),
-//             Text('${weatherModel.weatherStatus}'),
-//             Text('Temperature :'),
-//             Text('${weatherModel.temperature}°'),
-//             Text('Humidity :'),
-//             Text('${weatherModel.humidity}%'),
-//           ],
-//         );
-//       default:
-//         return SizedBox();
-//     }
-//   },
-// ),
+ // SingleChildScrollView(
+                //   child: BlocConsumer<ForecastCubit, ForecastState>(
+                //     listener: (context, state) {
+                //       if (state is ForecastFailed) {
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(
+                //             backgroundColor: Colors.red,
+                //             content: Text(state.error),
+                //           ),
+                //         );
+                //       }
+                //     },
+                //     builder: (context, state) {
+                //       if (state is ForecastSuccess) {
+                //         return Center(
+                //           child: ListView.separated(
+                //               itemCount: state.forecast.length,
+                //               itemBuilder: (context, index) {
+                //                 String convertedDateTime =
+                //                     DateTime.fromMillisecondsSinceEpoch(
+                //                   state.forecast[index].dateTimeUnix! * 1000,
+                //                 ).toString();
+                //                 return ListTile(
+                //                   title: Text(
+                //                     'Date: $convertedDateTime, Temp: ${state.forecast[index].temperature} degree, Main: ${state.forecast[index].weatherMain}, Desc: ${state.forecast[index].weatherCondition}',
+                //                   ),
+                //                   subtitle: Image.network(
+                //                       'http://openweathermap.org/img/wn/${state.forecast[index].icon}@2x.png'),
+                //                 );
+                //               },
+                //               separatorBuilder: (context, index) {
+                //                 return Divider();
+                //               }),
+                //         );
+                //       }
+                //       return Center(
+                //         child: CircularProgressIndicator(),
+                //       );
+                //     },
+                //   ),
+                // ),
