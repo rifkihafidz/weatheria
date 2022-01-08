@@ -17,15 +17,21 @@ class ForecastModel {
     // this.longitude,
   });
 
-  factory ForecastModel.fromJson(Map<dynamic, dynamic> json) {
-    return ForecastModel(
-      dateTimeUnix: json['dt'],
-      temperature: json['temp']['day'],
-      weatherMain: json['weather'][0]['main'],
-      weatherCondition: json['weather'][0]['description'],
-      icon: json['weather'][0]['icon'],
-      // latitude: json['lat'],
-      // longitude: json['lon'],
-    );
+  ForecastModel.fromJson(Map<String, dynamic> json) {
+    dateTimeUnix = json['dt'];
+    temperature = json['temp']['day'];
+    weatherMain = json['weather'][0]['main'];
+    weatherCondition = json['weather'][0]['description'];
+    icon = json['weather'][0]['icon'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'dateTimeUnix': dateTimeUnix,
+      'temperature': temperature,
+      'weatherMain': weatherMain,
+      'weatherCondition': weatherCondition,
+      'icon': icon,
+    };
   }
 }

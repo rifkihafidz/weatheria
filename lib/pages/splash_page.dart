@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
+import 'package:weatheria/providers/forecast_provider.dart';
+import 'package:weatheria/providers/weather_provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -31,17 +34,24 @@ class _SplashPageState extends State<SplashPage> {
     serviceEnabled = await location.serviceEnabled();
 
     if (serviceEnabled) {
-      print('GPS enabled.');
+      await getInit();
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } else {
       serviceEnabled = await location.requestService();
       if (serviceEnabled) {
-        print('GPS finally enabled.');
+        await getInit();
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else {
         SystemNavigator.pop();
       }
     }
+  }
+
+  getInit() async {
+    await Provider.of<WeatherProvider>(context, listen: false).getWeather();
+    print('Weather Success');
+    await Provider.of<ForecastProvider>(context, listen: false).getForecasts();
+    print('Forecast Success');
   }
 
   @override

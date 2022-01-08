@@ -22,15 +22,17 @@ class ForecastService {
           "https://api.openweathermap.org/data/2.5/onecall?lat=${locationModel.latitude}&lon=${locationModel.longitude}&exclude=current,minutely,hourly,alerts&units=metric&appid=6a7457c5db75047b06c52279f9cd80bb"));
 
       if (response.statusCode == 200) {
-        Map<dynamic, dynamic> json = jsonDecode(response.body);
-        List<dynamic> body = json['daily'];
+        List data = jsonDecode(response.body)['daily'];
 
-        List<ForecastModel> _forecastModel =
-            body.map((dynamic item) => ForecastModel.fromJson(item)).toList();
+        List<ForecastModel> forecasts = [];
 
-        return _forecastModel;
+        for (var item in data) {
+          forecasts.add(ForecastModel.fromJson(item));
+        }
+
+        return forecasts;
       } else {
-        throw Exception();
+        throw Exception('Failed to get forecasts');
       }
     } catch (e) {
       throw e;
