@@ -1,18 +1,26 @@
 class ForecastModel {
   int? dateTimeUnix;
   num? temperature;
-  String? weatherMain;
-  String? weatherCondition;
+  num? minTemperature;
+  num? maxTemperature;
+  String? weatherStatus;
+  String? weatherDescription;
   String? icon;
+  num? windSpeed;
+  num? humidity;
   // num? latitude;
   // num? longitude;
 
   ForecastModel({
     this.dateTimeUnix,
     this.temperature,
-    this.weatherMain,
-    this.weatherCondition,
+    this.weatherStatus,
+    this.weatherDescription,
     this.icon,
+    this.minTemperature,
+    this.maxTemperature,
+    this.windSpeed,
+    this.humidity,
     // this.latitude,
     // this.longitude,
   });
@@ -20,18 +28,26 @@ class ForecastModel {
   ForecastModel.fromJson(Map<String, dynamic> json) {
     dateTimeUnix = json['dt'];
     temperature = json['temp']['day'];
-    weatherMain = json['weather'][0]['main'];
-    weatherCondition = json['weather'][0]['description'];
+    minTemperature = json['temp']['min'];
+    maxTemperature = json['temp']['max'];
+    weatherStatus = json['weather'][0]['main'];
+    weatherDescription = json['weather'][0]['description'];
     icon = json['weather'][0]['icon'];
+    windSpeed = json['wind_speed'];
+    humidity = json['humidity'];
   }
 
   Map<String, dynamic> toJson() {
     return {
       'dateTimeUnix': dateTimeUnix,
       'temperature': temperature,
-      'weatherMain': weatherMain,
-      'weatherCondition': weatherCondition,
+      'minTemperature': minTemperature,
+      'maxTemperature': maxTemperature,
+      'weatherStatus': weatherStatus,
+      'weatherDescription': weatherDescription,
       'icon': icon,
+      'windSpeed': windSpeed,
+      'humidity': humidity,
     };
   }
 }

@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:weatheria/providers/forecast_provider.dart';
 import 'package:weatheria/providers/weather_provider.dart';
+import 'package:weatheria/theme.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -49,9 +52,7 @@ class _SplashPageState extends State<SplashPage> {
 
   getInit() async {
     await Provider.of<WeatherProvider>(context, listen: false).getWeather();
-    print('Weather Success');
     await Provider.of<ForecastProvider>(context, listen: false).getForecasts();
-    print('Forecast Success');
   }
 
   @override
@@ -65,14 +66,24 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: darkColor,
       body: Center(
-        child: SizedBox(
-          width: 150,
-          height: 150,
-          child: Image.network(
-            'https://cdn-icons-png.flaticon.com/512/1146/1146808.png',
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 150,
+              height: 150,
+              child: Lottie.asset(
+                'assets/splash.json',
+                fit: BoxFit.fill,
+              ),
+            ),
+            Text(
+              'Weatheria',
+              style: whiteTextStyle.copyWith(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );

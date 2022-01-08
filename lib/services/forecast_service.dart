@@ -16,8 +16,8 @@ class ForecastService {
         locationModel.latitude = locationData.latitude!;
         locationModel.longitude = locationData.longitude!;
       });
-      print('Get Location Success');
-      print('Get Forecast Start');
+
+      print('Get Forecast Start.');
       Response response = await get(Uri.parse(
           "https://api.openweathermap.org/data/2.5/onecall?lat=${locationModel.latitude}&lon=${locationModel.longitude}&exclude=current,minutely,hourly,alerts&units=metric&appid=6a7457c5db75047b06c52279f9cd80bb"));
 
@@ -29,7 +29,7 @@ class ForecastService {
         for (var item in data) {
           forecasts.add(ForecastModel.fromJson(item));
         }
-
+        print('Get Forecast Success.');
         return forecasts;
       } else {
         throw Exception('Failed to get forecasts');
