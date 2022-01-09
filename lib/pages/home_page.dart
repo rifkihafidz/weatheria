@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:weatheria/models/forecast_model.dart';
+import 'package:weatheria/models/hourly_forecast_model.dart';
+import 'package:weatheria/providers/forecast_hourly_provider.dart';
 import 'package:weatheria/providers/forecast_provider.dart';
 import 'package:weatheria/providers/weather_provider.dart';
 import 'package:weatheria/theme.dart';
 import 'package:weatheria/widgets/forecast_card.dart';
+import 'package:weatheria/widgets/hourly_forecast_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,6 +20,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController cityController = TextEditingController(text: '');
+  bool isCurrentLocation = true;
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -24,6 +32,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     WeatherProvider weatherProvider = Provider.of<WeatherProvider>(context);
+    ForecastHourlyProvider forecastHourlyProvider =
+        Provider.of<ForecastHourlyProvider>(context);
     ForecastProvider forecastProvider = Provider.of<ForecastProvider>(context);
 
     DateTime convertedDateTime = DateTime.fromMillisecondsSinceEpoch(
@@ -68,7 +78,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(width: 4),
                 Text(
-                  'Your current location',
+                  isCurrentLocation
+                      ? 'Your current location'
+                      : 'Searched location',
                   style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -83,7 +95,64 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    Widget topContent() {
+    Widget searchContent() {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                ],
+                controller: cityController,
+                maxLines: 1,
+                style: whiteTextStyle,
+                decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: whiteColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: whiteColor),
+                  ),
+                  hintText: 'Search city...',
+                  hintStyle: whiteTextStyle,
+                ),
+              ),
+            ),
+            SizedBox(width: 5),
+            IconButton(
+              onPressed: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                await weatherProvider
+                    .getWeatherUsingCityName(cityController.text);
+                await forecastHourlyProvider
+                    .getForecastsHourlyUsingCityName(weatherProvider.weather);
+                await forecastProvider
+                    .getForecastsUsingCityName(weatherProvider.weather);
+                setState(() {
+                  isLoading = false;
+                  cityController.text = '';
+                  isCurrentLocation = false;
+                });
+              },
+              icon: Icon(
+                Icons.search,
+                color: whiteColor,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget topWeatherContent() {
       return Container(
         margin: EdgeInsets.only(top: 10, right: 15, left: 15),
         child: Column(
@@ -180,21 +249,58 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           child: Text(
-            'Update Weather',
+            'Get Current Location Weather',
             style: whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
           ),
           onPressed: () async {
+            setState(() {
+              isLoading = true;
+            });
             await weatherProvider.getWeather();
+            await forecastHourlyProvider.getForecastsHourly();
             await forecastProvider.getForecasts();
-            setState(() {});
+            setState(() {
+              isLoading = false;
+              isCurrentLocation = true;
+            });
           },
         ),
       );
     }
 
-    Widget bottomContent() {
+    Widget hourlyForecastContent() {
       return Container(
-        margin: EdgeInsets.only(top: 10),
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          children: [
+            Text(
+              '24-hours forecast :',
+              style: whiteTextStyle,
+            ),
+            SizedBox(height: 20),
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: forecastHourlyProvider.forecasts
+                      .map((HourlyForecastModel forecast) {
+                    return Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: HourlyForecastCard(forecast),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget forecastContent() {
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
         child: Column(
           children: [
             Text(
@@ -226,16 +332,26 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: darkColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                header(),
-                topContent(),
-                buttonUpdateWeather(),
-                bottomContent(),
-              ],
-            ),
-          ),
+          child: isLoading
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: whiteColor,
+                    ),
+                  ),
+                )
+              : Column(
+                  children: [
+                    header(),
+                    searchContent(),
+                    topWeatherContent(),
+                    buttonUpdateWeather(),
+                    hourlyForecastContent(),
+                    forecastContent(),
+                  ],
+                ),
         ),
       ),
     );

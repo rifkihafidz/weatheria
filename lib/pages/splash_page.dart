@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:weatheria/providers/forecast_hourly_provider.dart';
 import 'package:weatheria/providers/forecast_provider.dart';
 import 'package:weatheria/providers/weather_provider.dart';
 import 'package:weatheria/theme.dart';
@@ -52,6 +52,8 @@ class _SplashPageState extends State<SplashPage> {
 
   getInit() async {
     await Provider.of<WeatherProvider>(context, listen: false).getWeather();
+    await Provider.of<ForecastHourlyProvider>(context, listen: false)
+        .getForecastsHourly();
     await Provider.of<ForecastProvider>(context, listen: false).getForecasts();
   }
 

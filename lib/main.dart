@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatheria/pages/home_page.dart';
 import 'package:weatheria/pages/splash_page.dart';
+import 'package:weatheria/providers/forecast_hourly_provider.dart';
 import 'package:weatheria/providers/forecast_provider.dart';
 import 'package:weatheria/providers/weather_provider.dart';
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => WeatherProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ForecastHourlyProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => ForecastProvider(),

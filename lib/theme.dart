@@ -20,12 +20,3 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
   }
 }
-
-backgroundColor() {
-  var currentHour = DateTime.now().hour;
-  if ((currentHour > 5) && (currentHour < 18)) {
-    return lightColor;
-  } else {
-    return darkColor;
-  }
-}

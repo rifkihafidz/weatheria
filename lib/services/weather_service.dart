@@ -31,4 +31,21 @@ class WeatherService {
       throw e;
     }
   }
+
+  Future<WeatherModel> getLocationWeatherUsingCityName(String cityName) async {
+    try {
+      print('Get Weather Start.');
+      final request = await get(
+        Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?units=metric&q=$cityName&appid=6a7457c5db75047b06c52279f9cd80bb',
+        ),
+      );
+      Map response = jsonDecode(request.body);
+      weatherModel = WeatherModel.fromMap(response);
+      print('Get Weather Success.');
+      return weatherModel;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

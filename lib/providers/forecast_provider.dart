@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:weatheria/models/forecast_model.dart';
+import 'package:weatheria/models/weather_model.dart';
 import 'package:weatheria/services/forecast_service.dart';
 
 class ForecastProvider with ChangeNotifier {
@@ -15,6 +16,17 @@ class ForecastProvider with ChangeNotifier {
   Future<void> getForecasts() async {
     try {
       List<ForecastModel> forecasts = await ForecastService().getForecast();
+
+      _forecasts = forecasts;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getForecastsUsingCityName(WeatherModel weatherModel) async {
+    try {
+      List<ForecastModel> forecasts =
+          await ForecastService().getForecastUsingCityName(weatherModel);
 
       _forecasts = forecasts;
     } catch (e) {

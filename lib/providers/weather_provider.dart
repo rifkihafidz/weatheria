@@ -21,4 +21,15 @@ class WeatherProvider with ChangeNotifier {
       print(e);
     }
   }
+
+  Future<void> getWeatherUsingCityName(String cityName) async {
+    try {
+      WeatherModel weather =
+          await WeatherService().getLocationWeatherUsingCityName(cityName);
+
+      _weather = weather;
+    } catch (e) {
+      print(e);
+    }
+  }
 }
