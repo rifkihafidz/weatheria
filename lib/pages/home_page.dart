@@ -330,9 +330,9 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: darkColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: isLoading
+      body: ListView(
+        children: [
+          isLoading
               ? Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
@@ -352,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                     forecastContent(),
                   ],
                 ),
-        ),
+        ],
       ),
     );
   }
