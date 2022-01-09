@@ -35,14 +35,4 @@ class WeatherModel {
     this.locationName = map['name'];
     this.windSpeed = map['wind']['speed'];
   }
-
-  // factory WeatherModel.fromJson(Map<dynamic, dynamic> json) {
-  //   return WeatherModel(
-  //     dateTimeUnix: json['dt'],
-  //     temperature: json['main']['temp'],
-  //     weatherStatus: json['weather'][0]['main'],
-  //     weatherIcon: json['weather'][0]['icon'],
-  //     humidity: json['main']['humidity'],
-  //   );
-  // }
 }
