@@ -47,8 +47,8 @@ class ForecastHourlyService {
       WeatherModel weather) async {
     try {
       await location.getLocation().then((locationData) {
-        locationModel.latitude = double.parse(weather.latitude.toString());
-        locationModel.longitude = double.parse(weather.longitude.toString());
+        locationModel.latitude = double.parse(weather.coord!.lat.toString());
+        locationModel.longitude = double.parse(weather.coord!.lon.toString());
       });
 
       print('Get Forecast Hourly Start.');

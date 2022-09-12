@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -37,22 +39,22 @@ class _HomePageState extends State<HomePage> {
     ForecastProvider forecastProvider = Provider.of<ForecastProvider>(context);
 
     DateTime convertedDateTime = DateTime.fromMillisecondsSinceEpoch(
-      weatherProvider.weather.dateTimeUnix! * 1000,
+      weatherProvider.weather.dt! * 1000,
     );
 
     lottieWeather() {
-      if (weatherProvider.weather.weatherStatus == 'Clouds') {
+      if (weatherProvider.weather.weather![0].main == 'Clouds') {
         return 'assets/clouds.json';
-      } else if (weatherProvider.weather.weatherStatus == 'Thunderstorm') {
+      } else if (weatherProvider.weather.weather![0].main == 'Thunderstorm') {
         return 'assets/thunderstorm.json';
-      } else if (weatherProvider.weather.weatherStatus == 'Drizzle' ||
-          weatherProvider.weather.weatherStatus == 'Rain') {
+      } else if (weatherProvider.weather.weather![0].main == 'Drizzle' ||
+          weatherProvider.weather.weather![0].main == 'Rain') {
         return 'assets/rainy.json';
-      } else if (weatherProvider.weather.weatherStatus == 'Snow') {
+      } else if (weatherProvider.weather.weather![0].main == 'Snow') {
         return 'assets/snow.json';
-      } else if (weatherProvider.weather.weatherIcon == '50d') {
+      } else if (weatherProvider.weather.weather![0].icon == '50d') {
         return 'assets/mist.json';
-      } else if (weatherProvider.weather.weatherStatus == 'Clear') {
+      } else if (weatherProvider.weather.weather![0].main == 'Clear') {
         return 'assets/clear.json';
       }
     }
@@ -87,7 +89,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 5),
             Text(
-              '${weatherProvider.weather.locationName}',
+              '${weatherProvider.weather.name}',
               style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
@@ -167,7 +169,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 5),
             Text(
-              '${weatherProvider.weather.weatherDescription}'.capitalize(),
+              '${weatherProvider.weather.weather![0].description}'.capitalize(),
               style: whiteTextStyle,
             ),
             SizedBox(height: 5),
@@ -176,7 +178,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '${weatherProvider.weather.temperature!.round()}',
+                  '${weatherProvider.weather.main!.temp!.round()}',
                   style: whiteTextStyle.copyWith(fontSize: 30),
                 ),
                 Text(
@@ -197,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      '${weatherProvider.weather.windSpeed} m/s',
+                      '${weatherProvider.weather.wind!.speed} m/s',
                       style: whiteTextStyle,
                     ),
                   ],
@@ -211,7 +213,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      '${weatherProvider.weather.humidity} %',
+                      '${weatherProvider.weather.main!.humidity} %',
                       style: whiteTextStyle,
                     ),
                   ],
