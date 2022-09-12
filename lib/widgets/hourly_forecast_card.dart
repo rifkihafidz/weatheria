@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
@@ -5,28 +7,28 @@ import 'package:weatheria/models/hourly_forecast_model.dart';
 import 'package:weatheria/theme.dart';
 
 class HourlyForecastCard extends StatelessWidget {
-  final HourlyForecastModel forecast;
+  final Hourly hourly;
 
-  const HourlyForecastCard(this.forecast, {Key? key}) : super(key: key);
+  const HourlyForecastCard(this.hourly, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     DateTime convertedDateTime = DateTime.fromMillisecondsSinceEpoch(
-      forecast.dateTimeUnix! * 1000,
+      hourly.dt! * 1000,
     );
     lottieWeather() {
-      if (forecast.weatherStatus == 'Clouds') {
+      if (hourly.weather![0].main == 'Clouds') {
         return 'assets/clouds.json';
-      } else if (forecast.weatherStatus == 'Thunderstorm') {
+      } else if (hourly.weather![0].main == 'Thunderstorm') {
         return 'assets/thunderstorm.json';
-      } else if (forecast.weatherStatus == 'Drizzle' ||
-          forecast.weatherStatus == 'Rain') {
+      } else if (hourly.weather![0].main == 'Drizzle' ||
+          hourly.weather![0].main == 'Rain') {
         return 'assets/rainy.json';
-      } else if (forecast.weatherStatus == 'Snow') {
+      } else if (hourly.weather![0].main == 'Snow') {
         return 'assets/snow.json';
-      } else if (forecast.icon == '50d') {
+      } else if (hourly.weather![0].icon == '50d') {
         return 'assets/mist.json';
-      } else if (forecast.weatherStatus == 'Clear') {
+      } else if (hourly.weather![0].main == 'Clear') {
         return 'assets/clear.json';
       }
     }
@@ -44,7 +46,7 @@ class HourlyForecastCard extends StatelessWidget {
             DateFormat('HH:mm').format(convertedDateTime).toString(),
             style: whiteTextStyle,
           ),
-          Text('${forecast.temperature!.round()}°C', style: whiteTextStyle),
+          Text('${hourly.temp}°C', style: whiteTextStyle),
           SizedBox(height: 5),
           Container(
             height: 50,
@@ -65,7 +67,7 @@ class HourlyForecastCard extends StatelessWidget {
               ),
               SizedBox(width: 5),
               Text(
-                '${forecast.windSpeed} m/s',
+                '${hourly.windSpeed} m/s',
                 style: whiteTextStyle,
               ),
             ],

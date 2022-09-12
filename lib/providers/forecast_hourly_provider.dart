@@ -4,21 +4,21 @@ import 'package:weatheria/models/weather_model.dart';
 import 'package:weatheria/services/forecast_hourly_service.dart';
 
 class ForecastHourlyProvider with ChangeNotifier {
-  late List<HourlyForecastModel> _forecasts = [];
+  late HourlyForecastModel _forecast;
 
-  List<HourlyForecastModel> get forecasts => _forecasts;
+  HourlyForecastModel get forecast => _forecast;
 
-  set forecasts(List<HourlyForecastModel> forecasts) {
-    _forecasts = forecasts;
+  set forecast(HourlyForecastModel forecast) {
+    _forecast = forecast;
     notifyListeners();
   }
 
   Future<void> getForecastsHourly() async {
     try {
-      List<HourlyForecastModel> forecasts =
+      HourlyForecastModel forecast =
           await ForecastHourlyService().getForecastHourly();
 
-      _forecasts = forecasts;
+      _forecast = forecast;
     } catch (e) {
       print(e);
     }
@@ -27,10 +27,10 @@ class ForecastHourlyProvider with ChangeNotifier {
   Future<void> getForecastsHourlyUsingCityName(
       WeatherModel weatherModel) async {
     try {
-      List<HourlyForecastModel> forecasts = await ForecastHourlyService()
+      HourlyForecastModel forecast = await ForecastHourlyService()
           .getForecastHourlyUsingCityName(weatherModel);
 
-      _forecasts = forecasts;
+      _forecast = forecast;
     } catch (e) {
       print(e);
     }

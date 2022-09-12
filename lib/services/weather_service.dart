@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
 import 'package:location/location.dart';
 import 'package:weatheria/models/location_model.dart';
 import 'package:weatheria/models/weather_model.dart';

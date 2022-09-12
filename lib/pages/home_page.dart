@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:weatheria/models/forecast_model.dart';
-import 'package:weatheria/models/hourly_forecast_model.dart';
 import 'package:weatheria/providers/forecast_hourly_provider.dart';
 import 'package:weatheria/providers/forecast_provider.dart';
 import 'package:weatheria/providers/weather_provider.dart';
@@ -285,13 +284,17 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: forecastHourlyProvider.forecasts
-                      .map((HourlyForecastModel forecast) {
-                    return Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: HourlyForecastCard(forecast),
-                    );
-                  }).toList(),
+                  children: List.generate(
+                    forecastHourlyProvider.forecast.hourly!.length,
+                    (index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: HourlyForecastCard(
+                          forecastHourlyProvider.forecast.hourly![index],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
