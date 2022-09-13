@@ -318,14 +318,22 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children:
-                      forecastProvider.forecasts.map((ForecastModel forecast) {
+                  children: List.generate(
+                      forecastProvider.forecastDaily.daily!.length, (index) {
                     return Container(
                       margin: EdgeInsets.only(right: 10),
-                      child: ForecastCard(forecast),
+                      child: ForecastCard(
+                          forecastProvider.forecastDaily.daily![index]),
                     );
-                  }).toList(),
+                  }),
                 ),
+                // children:
+                //     forecastProvider.forecasts.map((ForecastModel forecast) {
+                // return Container(
+                //   margin: EdgeInsets.only(right: 10),
+                //   child: ForecastCard(forecast),
+                // );
+                // }).toList(),
               ),
             ),
           ],

@@ -4,20 +4,20 @@ import 'package:weatheria/models/weather_model.dart';
 import 'package:weatheria/services/forecast_service.dart';
 
 class ForecastProvider with ChangeNotifier {
-  late List<ForecastModel> _forecasts = [];
+  late ForecastModel _forecastDaily;
 
-  List<ForecastModel> get forecasts => _forecasts;
+  ForecastModel get forecastDaily => _forecastDaily;
 
-  set forecasts(List<ForecastModel> forecasts) {
-    _forecasts = forecasts;
+  set forecastDaily(ForecastModel forecastDaily) {
+    _forecastDaily = forecastDaily;
     notifyListeners();
   }
 
   Future<void> getForecasts() async {
     try {
-      List<ForecastModel> forecasts = await ForecastService().getForecast();
+      ForecastModel forecastDaily = await ForecastService().getForecast();
 
-      _forecasts = forecasts;
+      _forecastDaily = forecastDaily;
     } catch (e) {
       print(e);
     }
@@ -25,10 +25,10 @@ class ForecastProvider with ChangeNotifier {
 
   Future<void> getForecastsUsingCityName(WeatherModel weatherModel) async {
     try {
-      List<ForecastModel> forecasts =
+      ForecastModel forecastDaily =
           await ForecastService().getForecastUsingCityName(weatherModel);
 
-      _forecasts = forecasts;
+      _forecastDaily = forecastDaily;
     } catch (e) {
       print(e);
     }

@@ -5,30 +5,30 @@ import 'package:weatheria/models/forecast_model.dart';
 import 'package:weatheria/theme.dart';
 
 class ForecastCard extends StatelessWidget {
-  final ForecastModel forecast;
+  final Daily daily;
   const ForecastCard(
-    this.forecast, {
+    this.daily, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     DateTime convertedDateTime = DateTime.fromMillisecondsSinceEpoch(
-      forecast.dateTimeUnix! * 1000,
+      daily.dt! * 1000,
     );
     lottieWeather() {
-      if (forecast.weatherStatus == 'Clouds') {
+      if (daily.weather![0].main == 'Clouds') {
         return 'assets/clouds.json';
-      } else if (forecast.weatherStatus == 'Thunderstorm') {
+      } else if (daily.weather![0].main == 'Thunderstorm') {
         return 'assets/thunderstorm.json';
-      } else if (forecast.weatherStatus == 'Drizzle' ||
-          forecast.weatherStatus == 'Rain') {
+      } else if (daily.weather![0].main == 'Drizzle' ||
+          daily.weather![0].main == 'Rain') {
         return 'assets/rainy.json';
-      } else if (forecast.weatherStatus == 'Snow') {
+      } else if (daily.weather![0].main == 'Snow') {
         return 'assets/snow.json';
-      } else if (forecast.icon == '50d') {
+      } else if (daily.weather![0].icon == '50d') {
         return 'assets/mist.json';
-      } else if (forecast.weatherStatus == 'Clear') {
+      } else if (daily.weather![0].main == 'Clear') {
         return 'assets/clear.json';
       }
     }
@@ -61,7 +61,7 @@ class ForecastCard extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Text(
-            '${forecast.weatherStatus}',
+            '${daily.weather![0].main}',
             style: whiteTextStyle,
           ),
           SizedBox(height: 10),
@@ -74,8 +74,7 @@ class ForecastCard extends StatelessWidget {
                 color: whiteColor,
               ),
               SizedBox(width: 3),
-              Text('${forecast.maxTemperature!.round()}°C',
-                  style: whiteTextStyle),
+              Text('${daily.temp!.max!.round()}°C', style: whiteTextStyle),
             ],
           ),
           SizedBox(height: 10),
@@ -88,7 +87,7 @@ class ForecastCard extends StatelessWidget {
                 color: whiteColor,
               ),
               SizedBox(width: 5),
-              Text('${forecast.humidity} %', style: whiteTextStyle),
+              Text('${daily.humidity} %', style: whiteTextStyle),
             ],
           ),
           SizedBox(height: 10),
@@ -101,8 +100,7 @@ class ForecastCard extends StatelessWidget {
                 color: whiteColor,
               ),
               SizedBox(width: 3),
-              Text('${forecast.minTemperature!.round()}°C',
-                  style: whiteTextStyle),
+              Text('${daily.temp!.min!.round()}°C', style: whiteTextStyle),
             ],
           ),
           SizedBox(height: 10),
@@ -116,7 +114,7 @@ class ForecastCard extends StatelessWidget {
               ),
               SizedBox(width: 5),
               Text(
-                '${forecast.windSpeed} m/s',
+                '${daily.windSpeed} m/s',
                 style: whiteTextStyle,
               ),
             ],
