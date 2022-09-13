@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:location/location.dart';
 import 'package:weatheria/models/hourly_forecast_model.dart';
 import 'package:weatheria/models/location_model.dart';

@@ -46,7 +46,7 @@ class HourlyForecastCard extends StatelessWidget {
             DateFormat('HH:mm').format(convertedDateTime).toString(),
             style: whiteTextStyle,
           ),
-          Text('${hourly.temp}°C', style: whiteTextStyle),
+          Text('${hourly.temp!.round()}°C', style: whiteTextStyle),
           SizedBox(height: 5),
           Container(
             height: 50,
